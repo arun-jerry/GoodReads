@@ -1,8 +1,8 @@
 //config
 var resultsData = {};
 var featuredResults = "Dan Brown";
-
-var items = [];
+// books temp value to be fecthed from cache
+var books = [];
 
 var loadXMLFile = (text, page = 1) => {
   var xmlhttp = new XMLHttpRequest();
@@ -14,22 +14,23 @@ var loadXMLFile = (text, page = 1) => {
       document.getElementById("book-shelf").innerHTML = '<div class="loader">Loading...</div>';
     }
   };
+  //check if page is already cached 
   if(!hasCached()) {
     xmlhttp.open("GET", "https://cors-anywhere.herokuapp.com/https://www.goodreads.com/search.xml?key=slyYiNHQ3ESGgJSTiHDErA&page="+page+"&q="+text, true);
     xmlhttp.send();    
   } else {
-    debugger;
     var books = cachedBooksResult();
     document.getElementById("book-shelf").innerHTML = books[0].result;
   }
-
 }
+
+
 var processResults = (xml) => {
   var i;
   var xmlDoc = xml.responseXML;
   var totalResults = Number(xmlDoc.getElementsByTagName("total-results")[0].innerHTML);
   if(totalResults) {
-    //if hidden from previous search with no result
+    //if pagenation was hidden because of empty result search previously
     document.querySelector('.nav-container').classList.remove("hide");
 
     populatePageData(xmlDoc);
@@ -59,6 +60,7 @@ gotoPage.addEventListener('submit', event => {
   loadXMLFile(searchText, page);
 });
 
+// "next" meaning the page the should be displayed next can be a previous page page first page
 const next = document.querySelector('#pagination-nav');
 next.addEventListener('click', event => {
   const currentPage = getCurrentPage();
@@ -66,12 +68,14 @@ next.addEventListener('click', event => {
   const actionType = event.target.id;
   var page = nextPageNumber(actionType, currentPage, resultsData);
 
+  // small validation so that the paginations does not go beyond the last search result page or goes to negative search page number
   if(page <= resultsData.pagesCount && page > 0 && currentPage!= page) {
     document.querySelector('#goto-page').value = page;
     loadXMLFile(searchText, page);
   }
 });
 
+// triggeering actions based on the target element and only event is binded to the parent
 var nextPageNumber = (actionType, currentPage, resultsData) => {
   switch(actionType) {
     case "next":
@@ -124,6 +128,7 @@ var seachInfo = (xmlDoc) => {
     var seachText = getSearchText();
     var isNotFeaturedResult = seachText != featuredResults;
 
+    // just to diplsay the featured list info and search info
     if(isNotFeaturedResult) {
       document.querySelector('.featuring i').innerHTML = 'Showing seach results of "'+ seachText +'". Time taken for search '+ queryTime;  
     } else {
@@ -137,6 +142,8 @@ var displayNoresult = () => {
     document.querySelector('.nav-container').classList.add("hide");
 }
 
+
+// check if page is cached already with same keyword and page number 
 var hasCached = () => {
   return cachedBooksResult().length;
 }
@@ -145,20 +152,20 @@ var cachedBooksResult = () => {
   var key = getSearchText()+"page"+getCurrentPage();
   var cachedBooks = JSON.parse(window.localStorage.getItem('cachedData')) || [];
   return cachedBooks.filter((val) => {
-    return val.page == key
+    return val.page == key.toLowerCase()
   });
 }
-
+// check if current search result should be cached or not
 var shouldCache = (resultHtml) => {
   var cacheKey = getSearchText()+"page"+getCurrentPage();
-    items = JSON.parse(window.localStorage.getItem('cachedData')) || [];
+    books = JSON.parse(window.localStorage.getItem('cachedData')) || [];
 
     if(!hasCached()) {
-      items.push({
-      page: cacheKey,
+      books.push({
+      page: cacheKey.toLowerCase(),
       result: resultHtml
     });
-    window.localStorage.setItem('cachedData', JSON.stringify(items));
+    window.localStorage.setItem('cachedData', JSON.stringify(books));
     }
 };
 
