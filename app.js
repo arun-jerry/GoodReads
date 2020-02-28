@@ -2,6 +2,7 @@
 var resultsData = {};
 var featuredResults = "Dan Brown";
 
+var items = [];
 
 var loadXMLFile = (text, page = 1) => {
   var xmlhttp = new XMLHttpRequest();
@@ -13,9 +14,15 @@ var loadXMLFile = (text, page = 1) => {
       document.getElementById("book-shelf").innerHTML = '<div class="loader">Loading...</div>';
     }
   };
+  if(!hasCached()) {
+    xmlhttp.open("GET", "https://cors-anywhere.herokuapp.com/https://www.goodreads.com/search.xml?key=slyYiNHQ3ESGgJSTiHDErA&page="+page+"&q="+text, true);
+    xmlhttp.send();    
+  } else {
+    debugger;
+    var books = cachedBooksResult();
+    document.getElementById("book-shelf").innerHTML = books[0].result;
+  }
 
-  xmlhttp.open("GET", "https://cors-anywhere.herokuapp.com/https://www.goodreads.com/search.xml?key=slyYiNHQ3ESGgJSTiHDErA&page="+page+"&q="+text, true);
-  xmlhttp.send();
 }
 var processResults = (xml) => {
   var i;
@@ -99,7 +106,7 @@ var generateHtmlData = (xmlDoc) => {
       var smallImage = books[i].getElementsByTagName('best_book')[0].getElementsByTagName('image_url')[0].innerHTML;
       resultHtml += "<div class='books pointer' alt='"+ title +"'><a target='_window' href='https://www.goodreads.com/book/isbn/"+id+"' alt='"+ title +"'><img src='"+ smallImage +"' title='"+ title +"'> </a></div>";
     }
-
+    shouldCache(resultHtml);
     return resultHtml;
 }
 
@@ -129,5 +136,30 @@ var displayNoresult = () => {
     document.querySelector('.featuring i').innerHTML = "Sorry no books to display";
     document.querySelector('.nav-container').classList.add("hide");
 }
+
+var hasCached = () => {
+  return cachedBooksResult().length;
+}
+
+var cachedBooksResult = () => {
+  var key = getSearchText()+"page"+getCurrentPage();
+  var cachedBooks = JSON.parse(window.localStorage.getItem('cachedData')) || [];
+  return cachedBooks.filter((val) => {
+    return val.page == key
+  });
+}
+
+var shouldCache = (resultHtml) => {
+  var cacheKey = getSearchText()+"page"+getCurrentPage();
+    items = JSON.parse(window.localStorage.getItem('cachedData')) || [];
+
+    if(!hasCached()) {
+      items.push({
+      page: cacheKey,
+      result: resultHtml
+    });
+    window.localStorage.setItem('cachedData', JSON.stringify(items));
+    }
+};
 
 window.onload = () => loadXMLFile(featuredResults);
