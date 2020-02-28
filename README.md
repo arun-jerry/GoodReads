@@ -11,7 +11,7 @@
 * could have integrated more API than just using the search API alone.
 * could have implimented validations in search
 * Did not cache no result page for a keyword
-* WELL IT CAN GO ON AND ON....! 
+* And sevral other mind blowing usecases.
 
 #### Screen 1 : Landing page
 The landing page features a collection of Dan Brown's books. The page is resolution friendly as well. If seen through a small screen the books alone will have horizontal scroll. 
