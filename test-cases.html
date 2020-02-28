@@ -1,0 +1,100 @@
+<html> 
+   <head> 
+      <meta charset = "utf-8"> 
+      <title>QUnit basic example</title> 
+      <link rel="stylesheet" type="text/css" href="style.css">
+      <link rel = "stylesheet" href = "https://code.jquery.com/qunit/qunit-git.css"> 
+      <script src = "https://code.jquery.com/qunit/qunit-git.js"></script>
+   </head> 
+   
+   <body> 
+      <div id = "qunit"></div> 
+      <div id = "qunit-fixture"></div>  
+      <script> 
+         QUnit.test( "Check action test", function( assert ) {
+            var resultsData = { pagesCount: 12 };
+            resultsData.pagesCount = 12;
+            assert.equal(nextPageNumber("prev", 10, resultsData), 9); 
+            assert.equal(nextPageNumber("next", 10, resultsData), 11);
+            assert.equal(nextPageNumber("first", 10, resultsData), 1);
+            assert.equal(nextPageNumber("last", 10, resultsData), 12);
+         });
+
+         QUnit.test( "Check if loads data", function( assert ) {
+            document.querySelector("#search-field").value = "sadadasdasda";
+            var done = assert.async();
+            setTimeout(function() {
+               var text = document.querySelector('.featuring i').innerHTML;
+               assert.equal(text.indexOf("sadadasdasda"), 26);
+               done();
+            }, 2000);
+         }); 
+
+         QUnit.test( "Check if no data loads", function( assert ) {
+            document.querySelector(".page-nav-ends.last").click();
+            var done = assert.async();
+            setTimeout(function() {
+               assert.equal(document.querySelector('.featuring i').innerHTML, "Sorry no books to display");
+               done();
+            }, 2000);
+         });
+
+         QUnit.test( "Check if feature content is perfect", function( assert ) {
+            document.querySelector("#search-field").value = "Dan Brown";
+            document.querySelector(".page-nav-ends.first").click();
+            var done = assert.async();
+            setTimeout(function() {
+               assert.equal(document.querySelector('#goto-page').value, 1);
+               done();
+            }, 2000);
+         });
+
+         QUnit.test( "Check if content loads for last page", function( assert ) {
+            document.querySelector("#search-field").value = "Dan Brown";
+            document.querySelector(".page-nav-ends.last").click();
+            var done = assert.async();
+            setTimeout(function() {
+               assert.equal(document.querySelector('#goto-page').value, 100);
+               done();
+            }, 2000);
+         });
+
+         QUnit.test( "Check if goto page shows results", function( assert ) {
+            document.querySelector("#search-field").value = "Dan Brown";
+            document.querySelector('#goto-page').value = 50;
+            document.querySelector(".page-nav.next").click();
+            var done = assert.async();
+            setTimeout(function() {
+               assert.equal(document.querySelectorAll("[alt='Enjoying Your Journey With God']").length, 2);
+               done();
+            }, 2000);
+         }); 
+      </script> 
+
+      <div class="app-wrapper">
+   <div class="app-container">
+      <div class="seach-container">
+         <form id="search-good-reads">
+            <h2 class="search-title">goodreads.</h2>
+            <input type="text" name="" id="search-field" class="search-field" size="60" value="Dan Brown">
+            <p class="featuring"><i>Featuring great collections from Dan Brown</i></p>
+         </form>
+      </div>
+      <div id="book-shelf"></div>
+      <div class="clear nav-container">
+      <nav id="pagination-nav" class="left">
+         <a id="first" title="first page" class="page-nav-ends first pointer flip-horizontal"></a>
+         <a id="prev" title="previous page" class="page-nav prev pointer flip-horizontal"></a>
+         <a id="next" title="next page" class="page-nav next pointer"></a>
+         <a id="last" title="last page" class="page-nav-ends last pointer"></a>
+      </nav>
+      <form id="search-page" class="right">
+         Page  <input type="" name="" id="goto-page" value="1" size="3"> of <span id="total-pages"></span>
+      </form>
+      </div>
+   </div>
+</div>
+<div class="little-platns"></div>
+   </body> 
+</html>
+<script src = "app.js"></script> 

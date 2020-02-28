@@ -1,0 +1,37 @@
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<script src="handlebars.min-v4.7.3.js"></script>
+	<title>Good Reads App</title>
+</head>
+<body>
+
+<div class="app-wrapper">
+	<div class="app-container">
+		<div class="seach-container">
+			<form id="search-good-reads">
+				<h2 class="search-title">goodreads.</h2>
+				<input type="text" name="" id="search-field" class="search-field" size="60" value="Dan Brown">
+				<p class="featuring"><i>Featuring great collections from Dan Brown</i></p>
+			</form>
+		</div>
+		<div id="book-shelf"></div>
+	</div>
+	<div class="sticky-bottom">
+		<div class="clear nav-container">
+			<nav id="pagination-nav" class="left">
+				<a id="first" title="first page" class="page-nav-ends first pointer flip-horizontal"></a>
+				<a id="prev" title="previous page" class="page-nav prev pointer flip-horizontal"></a>
+				<a id="next" title="next page" class="page-nav next pointer"></a>
+				<a id="last" title="last page" class="page-nav-ends last pointer"></a>
+			</nav>
+			<form id="search-page" class="right">
+				Page  <input type="" name="" id="goto-page" value="1" size="3"> of <span id="total-pages"></span>
+			</form>
+		</div>
+	</div>
+</div>
+<div class="little-platns"></div>
+</body>
+</html>
+<script type="text/javascript" src="app.js"></script>
