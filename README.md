@@ -1,5 +1,7 @@
 # GoodReads
 
+To see the app, download and open the index file
+
 ## KEY FEATURES:
 * Local storage.!!! Yes the searched pages are saved locally. The result from `generateHtmlData()` is stored agains a key shown below. `key = search_text + "page" + current_pagenumber`
 * Beautiful design and flexibility, the page reamins intact even on smaller screens with a scroll in the middle just for the books and the rest are fixed.
